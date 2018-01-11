@@ -204,6 +204,14 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\images\csharp-for-beginners.png" />
+    <Content Include="Content\images\csharp-zip.png" />
+    <Content Include="Content\laptop.jpg" />
+    <Content Include="Content\images\pdf.png" />
+    <Content Include="Content\images\unit-testing.png" />
+    <Content Include="Content\images\video.png" />
+    <Content Include="Content\logos\membership-icon-30x152.png" />
+    <Content Include="Content\logos\membership-icon-45x184.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -213,6 +221,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\documents\MVC-5-For-Beginners.pdf" />
+    <Content Include="Content\documents\HTML5-CSS3-and-Bootstrap-for-Beginners.pdf" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
