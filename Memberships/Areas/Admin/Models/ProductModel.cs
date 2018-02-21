@@ -27,8 +27,10 @@ namespace Memberships.Areas.Admin.Models
 
         public int ProductTypeId { get; set; }
 
+        [DisplayName("Product Link Text")]
         public ICollection<ProductLinkText> ProductLinkTexts { get; set; }
 
+        [DisplayName("Product Type")]
         public ICollection<ProductType> ProductTypes { get; set; }
 
         public string ProductType
@@ -46,9 +48,9 @@ namespace Memberships.Areas.Admin.Models
         {
             get
             {
-                return ProductLinkText == null || 
-                    ProductLinkText.Count.Equals(0) ?
-                    String.Empty : ProductLinkText.First(
+                return ProductLinkTexts == null || 
+                    ProductLinkTexts.Count.Equals(0) ?
+                    String.Empty : ProductLinkTexts.First(
                         pt => pt.Id.Equals(ProductLinkTextId)).Title;
             }
         }
