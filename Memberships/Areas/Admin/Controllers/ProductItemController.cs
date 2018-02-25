@@ -14,6 +14,7 @@ using Memberships.Areas.Admin.Extensions;
 
 namespace Memberships.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductItemController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -48,16 +49,16 @@ namespace Memberships.Areas.Admin.Controllers
                 Items = await db.Items.ToListAsync(),
                 Products = await db.Products.ToListAsync()
             };
-
             return View(model);
         }
 
         // POST: Admin/ProductItem/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ProductId,ItemId")] ProductItem productItem)
+        public async Task<ActionResult> Create(
+            [Bind(Include = "ProductId,ItemId")] ProductItem productItem)
         {
             if (ModelState.IsValid)
             {
@@ -86,11 +87,11 @@ namespace Memberships.Areas.Admin.Controllers
 
         // POST: Admin/ProductItem/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(
-            [Bind(Include = "ProductId, ItemId, OldProductId, OldItemId")]
+            [Bind(Include = "ProductId,ItemId,OldProductId,OldItemId")]
             ProductItem productItem)
         {
             if (ModelState.IsValid)
@@ -120,11 +121,11 @@ namespace Memberships.Areas.Admin.Controllers
             return View(await productItem.Convert(db));
         }
 
-
         // POST: Admin/ProductItem/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int itemId, int productId)
+        public async Task<ActionResult> DeleteConfirmed(
+            int itemId, int productId)
         {
             ProductItem productItem = await GetProductItem(itemId, productId);
             db.ProductItems.Remove(productItem);
@@ -132,7 +133,8 @@ namespace Memberships.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        private async Task<ProductItem> GetProductItem(int? itemId, int? productId)
+        private async Task<ProductItem> GetProductItem(
+            int? itemId, int? productId)
         {
             try
             {

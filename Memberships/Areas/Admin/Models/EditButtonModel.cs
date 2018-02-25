@@ -18,11 +18,9 @@ namespace Memberships.Areas.Admin.Models
                 var s = new StringBuilder("?");
                 if (ItemId > 0) s.Append(String.Format("{0}={1}&", "itemId", ItemId));
                 if (ProductId > 0) s.Append(String.Format("{0}={1}&", "productId", ProductId));
-                if (SubscriptionId > 0) s.Append(String.Format("{0}={1}&", "SubscriptionId", SubscriptionId));
-
-                return s.ToString().Substring(0, s.Length - 1);        
+                if (SubscriptionId > 0) s.Append(String.Format("{0}={1}&", "subscriptionId", SubscriptionId));
+                return s.ToString().Substring(0, s.Length - 1);
             }
         }
     }
-
 }

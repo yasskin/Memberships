@@ -12,6 +12,7 @@ using Memberships.Models;
 
 namespace Memberships.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class SectionController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -45,10 +46,11 @@ namespace Memberships.Areas.Admin.Controllers
 
         // POST: Admin/Section/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Title")] Section section)
+        public async Task<ActionResult> Create(
+            [Bind(Include = "Id,Title")] Section section)
         {
             if (ModelState.IsValid)
             {
@@ -77,10 +79,11 @@ namespace Memberships.Areas.Admin.Controllers
 
         // POST: Admin/Section/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Title")] Section section)
+        public async Task<ActionResult> Edit(
+            [Bind(Include = "Id,Title")] Section section)
         {
             if (ModelState.IsValid)
             {
@@ -112,8 +115,12 @@ namespace Memberships.Areas.Admin.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             Section section = await db.Sections.FindAsync(id);
-            db.Sections.Remove(section);
-            await db.SaveChangesAsync();
+            var isUnused = await db.Items.CountAsync(i => i.SectionId.Equals(id)) == 0;
+            if (isUnused)
+            {
+                db.Sections.Remove(section);
+                await db.SaveChangesAsync();
+            }
             return RedirectToAction("Index");
         }
 

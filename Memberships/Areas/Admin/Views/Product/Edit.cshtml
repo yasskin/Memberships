@@ -43,9 +43,9 @@
             @Html.LabelFor(model => model.ProductTypes, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(
-                                        model => model.ProductTypeId,
-                                        Model.ProductTypes.ToSelectListItem(Model.ProductTypeId),
-                                        new { @class = "form-control" })
+                    model => model.ProductTypeId,
+                    Model.ProductTypes.ToSelectListItem(Model.ProductTypeId),
+                    new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.ProductTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -54,9 +54,9 @@
             @Html.LabelFor(model => model.ProductLinkTexts, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(
-                                        model => model.ProductLinkTextId,
-                                        Model.ProductLinkTexts.ToSelectListItem(Model.ProductLinkTextId),
-                                        new { @class = "form-control" })
+                    model => model.ProductLinkTextId,
+                    Model.ProductLinkTexts.ToSelectListItem(Model.ProductLinkTextId),
+                    new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.ProductLinkTextId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -69,8 +69,6 @@
     </div>
 }
 
-
 <div>
     @Html.Partial("_BackToListButtonPartial")
 </div>
-

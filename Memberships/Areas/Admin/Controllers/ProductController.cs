@@ -11,10 +11,11 @@ using Memberships.Entities;
 using Memberships.Models;
 using Memberships.Areas.Admin.Extensions;
 using Memberships.Areas.Admin.Models;
-using System.Data.Entity;
+using System.Transactions;
 
 namespace Memberships.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -24,7 +25,6 @@ namespace Memberships.Areas.Admin.Controllers
         {
             var products = await db.Products.ToListAsync();
             var model = await products.Convert(db);
-
             return View(model);
         }
 
@@ -51,14 +51,14 @@ namespace Memberships.Areas.Admin.Controllers
             {
                 ProductLinkTexts = await db.ProductLinkTexts.ToListAsync(),
                 ProductTypes = await db.ProductTypes.ToListAsync()
-            };
 
+            };
             return View(model);
         }
 
         // POST: Admin/Product/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Id,Title,Description,ImageUrl,ProductLinkTextId,ProductTypeId")] Product product)
@@ -85,7 +85,6 @@ namespace Memberships.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
-
             var prod = new List<Product>();
             prod.Add(product);
             var ProductModel = await prod.Convert(db);
@@ -94,7 +93,7 @@ namespace Memberships.Areas.Admin.Controllers
 
         // POST: Admin/Product/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,Title,Description,ImageUrl,ProductLinkTextId,ProductTypeId")] Product product)
@@ -120,7 +119,6 @@ namespace Memberships.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
-
             var model = await product.Convert(db);
             return View(model);
         }
@@ -131,8 +129,25 @@ namespace Memberships.Areas.Admin.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             Product product = await db.Products.FindAsync(id);
-            db.Products.Remove(product);
-            await db.SaveChangesAsync();
+            using (var transaction = new TransactionScope(
+                    TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    var prodItems = db.ProductItems.Where(
+                        pi => pi.ProductId.Equals(id));
+                    var prodSubscr = db.SubscriptionProducts.Where(
+                        sp => sp.ProductId.Equals(id));
+                    db.ProductItems.RemoveRange(prodItems);
+                    db.SubscriptionProducts.RemoveRange(prodSubscr);
+                    db.Products.Remove(product);
+
+                    await db.SaveChangesAsync();
+                    transaction.Complete();
+                }
+                catch { transaction.Dispose(); }
+            }
+
             return RedirectToAction("Index");
         }
 

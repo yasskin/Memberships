@@ -12,6 +12,7 @@ using Memberships.Models;
 
 namespace Memberships.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PartController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -45,7 +46,7 @@ namespace Memberships.Areas.Admin.Controllers
 
         // POST: Admin/Part/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Id,Title")] Part part)
@@ -77,7 +78,7 @@ namespace Memberships.Areas.Admin.Controllers
 
         // POST: Admin/Part/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,Title")] Part part)
@@ -112,8 +113,13 @@ namespace Memberships.Areas.Admin.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             Part part = await db.Parts.FindAsync(id);
-            db.Parts.Remove(part);
-            await db.SaveChangesAsync();
+            var isUnused = await db.Items.CountAsync(i => i.PartId.Equals(id)) == 0;
+            if (isUnused)
+            {
+                db.Parts.Remove(part);
+                await db.SaveChangesAsync();
+            }
+
             return RedirectToAction("Index");
         }
 
